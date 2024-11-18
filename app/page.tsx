@@ -1,33 +1,37 @@
 export default function Home() {
   return (
-    <main className="bg-gray-300 h-screen flex items-center justify-center p-5">
-      <div className="bg-white shadow-lg p-5 rounded-2xl w-full">
-        <div className="flex justify-between items-center">
-          <div className="flex flex-col">
-            <span className="text-gray-600 font-semibold -mb-1">
-              In transit
-            </span>
-            <span className="text-4xl font-semibold">Coolblue</span>
+    <div className="flex h-screen items-center justify-center bg-gray-200">
+      <div className=" h-5/7 w-96 items-center rounded-3xl bg-yellow-400 pt-96 p-5 shadow-lg">
+        <span className="font-bold">Select Destination</span>
+        <div className="h-0.5 w-full bg-black"></div>
+        <div>
+          <div className="mt-5">
+            {[
+              "Vancouver",
+              "Seattle",
+              "Portland",
+              "Seattle",
+              "San Francisco",
+              "Los Angeles",
+              "San Diego",
+            ].map((place, index) => (
+              <div className="flex group" key={index}>
+                <div
+                  className="mr-2 mt-2 h-6 w-6 flex items-center justify-center rounded-full 
+                bg-black text-xs text-yellow-300 text-center group-hover:bg-white"
+                >
+                  {place.slice(0, 1)}
+                </div>
+                <div>
+                  <span className="text-3xl font-bold group-hover:text-white">
+                    {place}
+                  </span>
+                </div>
+              </div>
+            ))}
           </div>
-          <div className="size-12 rounded-full bg-orange-400" />
-        </div>
-        <div className="my-2 flex items-center gap-2">
-          <span className="bg-green-400 text-white uppercase px-2.5 py-1.5 text-xs font-medium rounded-full ">
-            Today
-          </span>
-          <span>9:30-10:30</span>
-        </div>
-        <div className="relative">
-          <div className="bg-gray-200 absolute rounded-full w-full h-2" />
-          <div className="bg-green-400 absolute rounded-full w-2/3 h-2" />
-        </div>
-        <div className="flex justify-between items-center mt-5 text-gray-600">
-          <span>Expected</span>
-          <span>Sorting center</span>
-          <span>In transit</span>
-          <span className="text-gray-400">Delivered</span>
         </div>
       </div>
-    </main>
+    </div>
   );
 }
