@@ -1,0 +1,14 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@layer components {
+  .weekly {
+    @apply flex  h-[80px]  w-[55px] flex-col items-center rounded-xl p-2 hover:bg-[#2da6ff];
+  }
+}
+.day {
+  @apply text-center text-2xl font-bold;
+}
+.month {
+  @apply mt-2 text-[12px] font-semibold;
+}
