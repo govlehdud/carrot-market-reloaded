@@ -102,3 +102,78 @@ group-focus-within: group안에 focus가 된 녀석을 향해 타겟할수있다
 
 tailwind 를 쓰면서 느끼는건 js하던 작업을 css에서 할수있게되는거같다.
 querySelector로 타겟해서 하던걸 여기선 group이나 peer 이런것으로 말이다.
+
+미리생성된 classname파일은 존재하지않는다 / class name은 요청에 따라 생성되는 것이다.
+
+대괄호 표기를하면 수치를 custom해서 쓸수있따.
+
+**just in time 컴파일러** 
+이런 힘은 tailwind.config.ts에서 오는것이다.
+- tailwind compiler가 class name을 찾을 위치를 알고있는 이유는 tailwind.config.ts에 있는 이 문법 덕분이다.
+ content: [
+    "./pages/**/*.{js,ts,jsx,tsx,mdx}",
+    "./components/**/*.{js,ts,jsx,tsx,mdx}",
+    "./app/**/*.{js,ts,jsx,tsx,mdx}",
+  ],
+  
+- config.ts에 값을 설정해두면 className작업할떄 쓸 수 있다.
+  theme: {
+    extend: {
+      borderRadius: {
+        "sexy-name": "11.11px",
+      },
+	.weekly {
+		@apply flex  h-[80px]  w-[55px] flex-col items-center rounded-xl p-2 hover:bg-[#2da6ff];
+  }
+    },
+  },
+ 
+ ex) 
+ <button className="w-full rounded-sexy-name" /> <- 마우스에 올려보면 sexy-name: 11.11px이 잘 나온다. 
+ <button className="w-full weekly" /> <- .weekly 에 썻던 설정을 쓸수있게 된다.
+ 
+ 컴파일러는 실제로 globals.css에 와서 directive들을 생성된 class name으로 대체 할 거야
+ @tailwind utilities : 컴파일러가 생성된 모든 code를 넣는 placeholer라고 생각하면된다.
+ w-full bg-black 과 같은 태그들은 utilities에 저장된다.
+ 이걸 지우면 대부분 utilities 태그들이기떄문에 망가진다. tailwind.css가 거의 다 망가지는 정도
+ @tailwind base : base는 컴파일러가 tailwind와 함꼐 제공되는 기본적인 스타일 종류를 두는 곳이다.
+ tailwind가 생성하는 기본적인 reset 및 기본값의 일종이라고 생각하면 된다.
+ base를 지우면 많이 틀어지지는 않지만 기본값이 없기떄문에 조금씩 틀려지는게 보인다.
+ 
+ @tailwind <- 이 부분이 밑줄 쳐져있으면 오른쪽 하단에 css파일 종류를 tailwind CSS로 변경하면된다.
+ 
+ globals.css 파일에 .className{@apply "style에 쓸 내용" } 직접 반복하지않고 style을 재사용 할 수 있는 옵션
+ 
+ layer directive는 layer를 각각 확장 할 수있도록 해준다.
+ ex) 
+ @layer base{
+	a{
+		@apply text-blue-500;
+	}
+ }
+ 이렇게하면 a태그는 blue-500색상이 default로 된다.
+ 
+ @apply
+기존 유틸리티 클래스를 사용자 커스텀 CSS에 인라인하려면 @apply를 사용하세요.
+https://tailwindcss.com/docs/functions-and-directives#apply
+
+@layer
+@layer 지시문을 사용하여 사용자 정의 스타일 세트가 속한 '버킷'을 Tailwind에 알립니다.
+https://tailwindcss.com/docs/functions-and-directives#layer
+
+*daisyui*
+Tailwind CSS용 가장 인기있는 컴포넌트 라이브러리
+npm i -D daisyui@latest
+plugins: [require("@tailwindcss/forms")],
+https://daisyui.com
+
+
+TailwindCSS 공식 플러그인
+- @tailwindcss/typography
+- @tailwindcss/forms
+- @tailwindcss/aspect-ratio
+- @tailwindcss/container-queries
+https://tailwindcss.com/docs/plugins#official-plugins
+
+tailwind.css End
+---------------------------------------------------------------------------------------------------------------------
