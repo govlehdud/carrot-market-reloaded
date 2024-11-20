@@ -174,4 +174,106 @@ TailwindCSS 공식 플러그인
 https://tailwindcss.com/docs/plugins#official-plugins
 
 ---------------------------------------------------------------------------------------------------------------------
+
+
+2024-11-20
+
+tailwindCSS를 만든 사람들이 만든 무료 라이브러리 사이트
+heroicons.com
+npm install @heroicons/react
+
+
+next.js에서는 state나 eventHandler는 쓰지않아도 html을 이쁘게 조작할수있다.
+react에서는 loading할떄도 state같은걸 많이 썻는데 흠흠..
+
+계정생성버튼에 아이콘을 넣고싶을때
+import React, { ReactNode } from "react";
+icon: ReactNode;
+
+React Icon site
+https://react-icons.github.io/react-icons/search/#q=github
+npm install react-icons --save
+
+
+리액트 컴포넌트를 렌더링하는게 아니다.
+http 요청을 받아서 json 같은 걸 반환함
+NextJS는 NextRequest 타입의 request 객체를 제공하고 있다.
+Get으로 받을것인지 Post 받을것인지는 확인할 필요가없다. 대신 함수 이름을 GET이나 POST로 명시해주면
+그안의 코드는 자동으로 GET request를 처리할것이다.
+
+
+API route를 만드는 방법
+
+ex) (원하는 이름)/(원하는이름)/route.ts    <- 폴더/route.ts만 제대로 만들면된다.
+ex) www/users/route.ts
+
+*page.tsx*
+<span onClick={onClick}>버튼</span>
+const onClick = async () => {
+    const res = await fetch("/www/users", {
+      method: "POST",
+      body: JSON.stringify({
+        username: "nico",
+        password: "1234",
+      }),
+    });
+    console.log(await res.json());
+};
+
+*route.ts*
+import { NextRequest } from "next/server";
+
+export async function GET(request: NextRequest) {
+  console.log(request);
+  return Response.json({
+    ok: true,
+  });
+}
+
+export async function POST(request: NextRequest) {
+  const data = await request.json();
+  return Response.json(data);
+}
+
+
+이런식으로 API route를 만드는 방법을 알아보았다.
+Next.js에서는 이러한 불편함을 없애줄수있다.
+route <- route라는 파일 이름이 매우 중요하다.
+route라는 파일명을 알려줘야 nextJS가 route handler을 만든다는 것을 알수있다
+page나 [id] 와 같은 것이다.
+-만약 내가 앱(Android / IOS) 개발이나 webhook같은것을 해야한다면 알아야하는 방식이다!
+
+
+**use server**
+
+use cline를 적었던 것 처럼 사용하려면 use server를 적어야한다
+use server는 함수가 서버에서만 실행되도록 만들어준다
+✔유의사항
+-server Action은 async function(비동기 함수)여야 한다.
+
+const handleForm = async () => {
+    "use server";
+    console.log("what is your name?");
+};
+
+이렇게 자동으로 만들거나
+
+async function handleForm(){
+    "use server";
+    console.log("what is your name?");
+};
+
+이렇게 function을 만든 뒤 아래에서 action에 handleForm을 넣어주면 된다.
+ex) <form action={handleForm} >
+
+-input에는 name속성이 필요하다 그래야 백엔드에서 확인이 가능하다
+이전버전의 nextJs나 단순 react.js로만 작업을 하고잇다면
+아마 input_name을 신경 안 썻을것이다
+
+백엔드로 보내진 데이터를 사용하는법은
+ㄴ> use server했던 function의 args를 FormData형식으로 받으면된다
+ex) async function handleForm(data:FormData){
+	"use server"  <--- 이 use server는 항상 최 상단에 있어야 한다.
+	   console.log(data.get("email"),data.get("password"))
+}
 ```
