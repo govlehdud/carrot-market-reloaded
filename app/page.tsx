@@ -1,35 +1,22 @@
+import Link from "next/link";
+
 export default function Home() {
   return (
-    <div className="flex h-screen items-center justify-center bg-gray-200">
-      <div className=" h-5/7 w-96 items-center rounded-3xl bg-yellow-400 pt-96 p-5 shadow-lg">
-        <span className="font-bold">Select Destination</span>
-        <div className="h-0.5 w-full bg-black"></div>
-        <div>
-          <div className="mt-5">
-            {[
-              "Vancouver",
-              "Seattle",
-              "Portland",
-              "Seattle",
-              "San Francisco",
-              "Los Angeles",
-              "San Diego",
-            ].map((place, index) => (
-              <div className="flex group" key={index}>
-                <div
-                  className="mr-2 mt-2 h-6 w-6 flex items-center justify-center rounded-full 
-                bg-black text-xs text-yellow-300 text-center group-hover:bg-white"
-                >
-                  {place.slice(0, 1)}
-                </div>
-                <div>
-                  <span className="text-3xl font-bold group-hover:text-white">
-                    {place}
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
+    <div className="flex flex-col items-center justify-between min-h-screen p-6">
+      <div className="my-auto flex flex-col items-center gap-2 *:font-medium">
+        <span className="text-9xl">🥕</span>
+        <h1 className="text-4xl ">당근</h1>
+        <h2 className="text-2xl">당근 마겟에 어서오세요!</h2>
+      </div>
+      <div className="flex flex-col items-center gap-3 w-full">
+        <Link href="/create-account" className="primary-btn text-lg py-2.5">
+          시작하기
+        </Link>
+        <div className="flex gap-2">
+          <span>이미 계정이 있나요?</span>
+          <Link href="/login" className="hover:underline">
+            로그인
+          </Link>
         </div>
       </div>
     </div>
