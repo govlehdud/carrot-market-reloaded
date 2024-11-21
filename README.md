@@ -276,4 +276,33 @@ ex) async function handleForm(data:FormData){
 	"use server"  <--- 이 use server는 항상 최 상단에 있어야 한다.
 	   console.log(data.get("email"),data.get("password"))
 }
+
+
+
+-- Server Action의 경과 & UI가 서로 소통하는 방법 --
+
+React.js에는 form action의 작업 상태를 알려주는 hook이 있다.
+이 hook의 이름은 useFormStatus
+pending을 쓰면 pending 상태인지를 알려주는 건데 function이 끝난 여부를 알려준다
+하지만 이 hook은 action을 실행하는 form과 같은 곳에서 사용할 수 없다.
+이 hook은 form의 자식에서만 사용할 수 있다.
+login버튼을 누를떄 loading대신에 pending을 써서 완료가 되었는지 안되었는지 구분을 할수있다.
+이렇게 logbutton을 동적이게 만들었으니 use server 가 아니라 use client가 되어야한다.
+내가 boolean 타입을 넘기지 않아도 pending은 자동으로 부모 form을 가져와서
+여기 action이 pending 상태인지 자동으로 알아낼것이다.
+
+
+-- Server Action의 결과를 UI로 전달하는 방법 --
+import redirect from "next/navigation"
+redirect("/")
+
+사용자가 로그인정보를 틀리게 입력했을경우
+useFormState라는 hook을 사용하게된다.
+
+useFormState(action, initialState, permalink?)
+컴포넌트 최상위 레벨에서 useFormState를 호출하여 폼 액션이 실행될 때 업데이트되는 컴포넌트 state를 생성합니다.
+
+useFormState는 두 개의 값이 담긴 배열을 반환합니다.
+- state: 첫 번째 렌더링에서는 initialState와 일치합니다. 액션이 실행된 이후에는 액션에서 반환된 값과 일치합니다.
+-formAction: form 컴포넌트의 action prop에 전달하거나 폼 내부 button 컴포넌트의 formAction prop에 전달할 수 있는 새로운 액션입니다.
 ```
