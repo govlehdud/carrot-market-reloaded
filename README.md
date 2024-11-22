@@ -305,4 +305,44 @@ useFormState(action, initialState, permalink?)
 useFormState는 두 개의 값이 담긴 배열을 반환합니다.
 - state: 첫 번째 렌더링에서는 initialState와 일치합니다. 액션이 실행된 이후에는 액션에서 반환된 값과 일치합니다.
 -formAction: form 컴포넌트의 action prop에 전달하거나 폼 내부 button 컴포넌트의 formAction prop에 전달할 수 있는 새로운 액션입니다.
+
+
+
+2024-11-22
+
+** validation library Zod **
+
+npm install zod
+
+1. 유효성 검사를 짧게 할수있게 도와준다
+- 원래라면 if,else를 걸고 비밀번호확인이 맞는지 id는 3자리수이상 10자리 이하인지 그런것들을 해준다.
+
+개별적 스키마 작성법
+import {z} from "zod";
+
+const usernameSchema = z.string().min(3).max(10)
+  usernameSchema.parse(data.username);
+}
+
+전체적인 스키마 작성법
+import {z} from "zod";
+
+const formSchema = z.object({
+  username: z.string().min(3).max(10),
+  email: z.string(),
+  password: z.string().min(10),
+  confirm_password: z.string().min(10),
+});
+formSchema.parse(data);
+
+에러들은 try-catch문으로 잡을수있다.
+
+니꼬썜은 parse보단 safeParse를 사용한다고 한다.
+그 이유는 parse는 데이터 유효성 검사가 실패하면 에러를 throw하지만
+safeParse는 에러를 throw 하지 않기 떄문이다.
+parse대신 safeParse를 쓰면 에러를 throw하지않기떄문에 try-catch문을 사용하지 않아도 된다.
+
+error.message를 띄울떄 사용할것은 flatten
+flatten은 우리가 error를 더 관리 할수있게 해준다.
+좀더 깔끔하고 보기편하게 정리된 변수가 나온다.
 ```
