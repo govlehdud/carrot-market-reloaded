@@ -345,4 +345,155 @@ parse대신 safeParse를 쓰면 에러를 throw하지않기떄문에 try-catch�
 error.message를 띄울떄 사용할것은 flatten
 flatten은 우리가 error를 더 관리 할수있게 해준다.
 좀더 깔끔하고 보기편하게 정리된 변수가 나온다.
+
+--------------------------------------------------------------------------------------------------
+
+*Prisma*
+
+npm i prisma
+
+npx prisma init
+ㄴ> Prisma Schema가 생성되었고 Prisma라는 새로운 폴더가 생겼으며 그 안에는 schema.prisma 파일이 있다.
+우리가 만든 DB에 접속하기 위해서는 DB URL을 .env 파일에 저장해야 한다
+
+.gitignore에 .env를 넣어줘야한다 <- DB 정보를 공개할수없기떄문
+
+
+datasource db {
+  provider = "sqlite"  <- 사용할 db를 적으면 된다 Ex) oracle, sqlite, maria,mongo, postgre
+  url      = env("DATABASE_URL")
+}
+
+
+기본적으로 model을 사용하여 만든다
+model User{
+	id Int @id @default(autoincrement()) <- 여기서 autoincrement는 자동으로 증가하는 값이며
+	초기값은 1 두번쨰사용자는 2 세번째 사용자는 3이다
+	username String @unique <- pk값
+	created_at DateTime @default <- default는 초기값을 정해주는것 Datetime을 써야 날짜관련해서 사용할수있다.
+	updated_at DateTime @updatedAt 어떠한 작업을해서 수정을할떄 그 시간을 저장할수있게해줌.
+}
+
+
+npx prisma migrate dev
+ㄴ> 실행하면 prisma는 npx prisma generate 명령어도 같이 실행할것이다.
+그러면 그 명령어는 너를 위한 client를 생성할것이다.(DB와 소통하기위한 ts로 작성된 client가 생성됨)
+**마이그레이션은 데이터베이스의 구조를 수정하는 것을 의미합니다. 이를 위해 프리즘 스키마를 변경하고 명령을 실행하여 스키마를 데이터베이스와 동기화합니다.
+
+node_module/.prisma/clinet/index.d.ts 를 보면 나를 위한 ts로 보호된 값들이 만들어진다. 이것을 어떻게 사용해야할까?
+ㄴ>
+(폴더)/db.ts 를 만든뒤 그냥 client를 초기화 하면된다
+import { PrismaClient } from "@prisma/client";
+
+const db = new PrismaClient();
+
+async function test() {
+  const user = await db.user.create({
+    data: {
+      username: "abcdTest",
+    },
+  });
+  console.log(user);
+}
+test();
+export default db;
+
+
+
+app/page.tsx에서 import "@/lib/db";를 실행해서 ide내 console에서 확인할수있다.
+
+
+async function test() {
+  const users = await db.user.findMany({
+    where: {
+      username: {
+        contains: "est",
+      },
+    },
+  });
+  console.log(users);
+}
+
+findMany를 사용하고 where문을 사용해서 "est"가 들어간것을 { }형태로 찾을수있다
+
+npx prisma studio
+ㄴ> localhost 5555 페이지가 열린다.
+우리가 만들었던 user정보도 여기에서 볼수있는것처럼 DB정보 확인 가능하다. 변경,삭제도 가능하고 필터링해서 정보를 볼수있다.
+하지만 이 진행과정을 거쳐야한다
+next.js에서 수정 후 prisma studio를 다시 켜줘야 한다!
+
+플러그인 prisma 다운
+cmd + shift + p로 JSON settings 파일을 열고
+
+"[prisma]": {
+"editor.defaultFormatter": "Prisma.prisma"
+}
+추가하면 save시 릴레이션 자동완성 됩니다.
+
+
+DB를 수정할떄마다 prisma studio를 꺼주고 npx prisma migrate dev 를 해줘야한다.
+그리고 확인할때 npx prisma migrate dev 를 입력한다
+
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  username  String   @unique
+  email     String?  @unique
+  password  String?
+  phone     String?  @unique
+  github_id String?  @unique
+  avatar    String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+model SMSToken {
+  id        Int      @id @default(autoincrement())
+  token     String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+}
+
+
+
+ex) user User를 하면
+@relation(fields: [userId], references: [id])
+userId    Int
+
+이렇게 두개가 생기는데
+
+@relation(fields: [userId], references: [id]) <- 이 relation은 db에 입력되지않고 밑에있는
+userId만 저장될것이다. 하지만 이 속성은 특별해서 db.ts에서 db.sMSToken.findUnique으로 값을 찾을떄
+where {id :1} 하면 id가 1인 속성을 찾아준다.
+
+*include*
+이 속성을 findUnique 안에 쓰면 user안의 값들을 모조리 볼수있다.
+
+이런식으로 model끼리 relation을 사용하면 값들을 이동하거나 확인할수있다.
+
+하지만 이것에 대한 문제가있는데 user와 relationship을 맺었는데 user를 삭제한다면 SMSToken은 관계성을 잃어버리기떄문에 엄청난 에러가 발생한다.
+
+*ondelete*
+-삭제했을떄 동작을 설정할수있다
+
+**ondelete.Cascade: 참조 레코드를 삭제하면 참조 레코드의 삭제가 트리거됩니다.**
+**ondelete.Restrict: 참조 레코드가 있는 경우 삭제를 방지합니다.**
+**ondelete.NoAction: Restrict과 유사하지만 사용 중인 데이터베이스에 따라 다릅니다.**
+**ondelete.SetNull: 참조 필드가 NULL로 설정됩니다. (optional일 때만 정상 작동)**
+**ondelete.SetDefault: 참조 필드가 기본값으로 설정됩니다.**
+
+내 계정을 삭제했으면 내가 올렸던 게시글들도 사라지는것이 당연한것처럼
+그래서 위에서 언급했던 @relation(fields: [userId], references: [id]) <- 이 공간에 넣는것이다
+ex) @relation(fields: [userId], references: [id], onDelete.Cascade)
+onDelete.Cascade를 넣으면 삭제 시 부모를 지우면 자식들도 지울수있게된다.
 ```
