@@ -6,9 +6,11 @@ import SocialLogin from "@/components/social-login";
 import { createAccount } from "./action";
 import { useActionState } from "react";
 import { PASSWORD_MIN_LENGTH } from "@/lib/constants";
+import db from "@/lib/db";
 
 export default function CreateAccount() {
   const [state, dispatch] = useActionState(createAccount, null);
+  console.log(state);
   return (
     <div className="flex flex-col gap-10 py-8 px-6">
       <div className="flex flex-col gap-2 *:font-medium">
@@ -22,7 +24,6 @@ export default function CreateAccount() {
           placeholder="Username"
           required
           errors={state?.fieldErrors.username}
-          // defaultValue={state?.data.username}
         />
         <Input name="email" type="email" placeholder="Email" required />
         <Input
