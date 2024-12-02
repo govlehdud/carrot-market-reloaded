@@ -496,4 +496,80 @@ where {id :1} 하면 id가 1인 속성을 찾아준다.
 그래서 위에서 언급했던 @relation(fields: [userId], references: [id]) <- 이 공간에 넣는것이다
 ex) @relation(fields: [userId], references: [id], onDelete.Cascade)
 onDelete.Cascade를 넣으면 삭제 시 부모를 지우면 자식들도 지울수있게된다.
+
+*MiddleWare*
+app폴더 옆에 만들어야한다 안에 만드는것이아닌 같은 경로에!
+ex) ex) project/app || project.middleware.ts
+
+js나 css파일 등을 랜더링 하려할떄 실행된다
+request: NextRequest를 하면 header를 받을수도잇고 cookie를 받을수도있다
+
+middleware는 node.js runtime내에서 실행되지않는다.
+Edge runtime이란곳에서 따로 실행된다.
+
+Edge runtime <- node.js의 경량화된 버전
+
+prisma는 middleware에서 실행하는걸 지원하지않는다
+Edge runtime은 빠르게 실행해야 해서 너무 무거우면 안되기떄문에 npm pakage들이 middleware에서 작동 안되는 이유기도하다
+
+특정 URL에서만 실행되도록 middleware설정이 가능하다
+ex) export const config = {
+  matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
+};
+
+이처럼 정규식을 사용하면 가능하다
+
+--------------------------------------------------------------------------------------------------------------------------------------------
+
+2024-12-02
+
+schema.prisma에서 model Product{} 만듬
+relation은 user User와 맺음
+원하는 쿼리 넣음
+
+npx prisma migrate dev
+
+app/(auth)
+이와같이 폴더링을 () 괄호를 사용하면 경로에 문제가 생기지도않고 그룹핑을 할수있다!
+
+그리고 ()괄호를 사용하여 그룹핑을 한 후 layout.tsx를 하면 다른 그룹과 다른 작업을 할수있게된다
+
+<Image /> <- next/image를 import해서 만든 이미지 컨포넌트이며
+loading,srcset
+
+srcset: 다른 image를 보여줄수있도록 허용하는 attribute(속성)이다.
+다른 스크린 다른 해상도일떄 말이다.
+일반 모니터 일반 해상도를 해줄수도잇고 특별한 모니터 특별한 해상도에게 다른 픽셀 밀도 지원 가능하다
+이 모든건 next.js가 해주는것이다 나는 <Image />에게 width와 height만 더 설정해주면된다.
+하지만 width와 height를 모를떄 dafault로 fill 속성을 쓰면된다.
+fill 속성은 Next.js의 Image 컴포넌트에서 사용되며, 이미지가 부모 요소의 크기에 맞게 자동으로
+조정되도록 합니다. 이 속성을 사용하면 이미지가 부모 요소의 너비와 높이에 맞춰서 늘어나거나 줄어들게 되어,
+ 비율을 유지하면서도 공간을 채우게 됩니다.
+즉, fill을 사용하면 이미지가 부모 요소의 크기에 맞춰서 완전히 채워지도록 설정할 수 있습니다.
+
+Next에서 제공하는 Image 컴포넌트
+기본 jsx img가 지원하지않는 여러가지 강력한기능을 지원함
+
+- 로딩 전후로 컴포넌트 위치가 밀리는 content shift 를 방지함.
+- 압축률이나, 화면 크기별 압축옵션을 제공함
+필수 prop으로 src, width, height, alt를 입력해주어야함.
+width, height를 모른다면, fill을 제공해주면됨
+fill은 이미지를 자동으로 부모컴포넌트의 크기로 맞춰줌
+
+utils.ts
+ex) price.toLocaleString("ko-kr"); <- 한국 won으로 숫자 format함
+
+
+intl(다국어 지원) 즉  국제화와 관련된 API
+const formatter = new Intl.RelativeTimeFormat("ko");
+-2 -> 2일전 // +3 -> 3일 후 로 변환된다.
+
+Number생성자
+Number("1111") => 1111
+Number("qwer") => NaN
+
+NextJS의 Image는 이미지를 자동으로 최적화를 해 주어 성능을 향상시키고 빠른 로딩이 되도록 해 준다.
+하지만 외부 호스트의 이미지(다른 사이트의 이미지 링크 등)를 불러올 때는 보안 상의 이유로 이 기능이 허용되지 않는다.
+따라서 next.config.mjs에서 hostname들을 등록해 주어야 한다.
+(nextConfig > images > remotePatterns > hostname)
 ```
