@@ -559,7 +559,6 @@ fill은 이미지를 자동으로 부모컴포넌트의 크기로 맞춰줌
 utils.ts
 ex) price.toLocaleString("ko-kr"); <- 한국 won으로 숫자 format함
 
-
 intl(다국어 지원) 즉  국제화와 관련된 API
 const formatter = new Intl.RelativeTimeFormat("ko");
 -2 -> 2일전 // +3 -> 3일 후 로 변환된다.
@@ -572,4 +571,18 @@ NextJS의 Image는 이미지를 자동으로 최적화를 해 주어 성능을 �
 하지만 외부 호스트의 이미지(다른 사이트의 이미지 링크 등)를 불러올 때는 보안 상의 이유로 이 기능이 허용되지 않는다.
 따라서 next.config.mjs에서 hostname들을 등록해 주어야 한다.
 (nextConfig > images > remotePatterns > hostname)
+
+사진 비율 박스에 맞추기 <- className="object-cover"
+
+이렇게 하면 prisma가 Type을 return해줘서
+export type InitialProducts = Prisma.PromiseReturnType<
+  typeof getInitialProducts
+>;
+
+useRef()
+- varialbe 내부에 data를 저장할 수 있게 해준다.
+ex) const trigger = useRef(1) 이 trigger숫자 1은 Rerender 시에도 지속된다.
+
+*IntersectionObserver*
+무한스크롤 트리거
 ```
