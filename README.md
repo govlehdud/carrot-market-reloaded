@@ -585,4 +585,17 @@ ex) const trigger = useRef(1) 이 trigger숫자 1은 Rerender 시에도 지속�
 
 *IntersectionObserver*
 무한스크롤 트리거
+
+const trigger = useRef<HTMLSpanElement>
+getElementByID에서 element를찾아 가져오는것처럼 여기는 span태그를 가져왔다.
+
+span을 observe하다가 버튼(element)이 사용자의 화면에 보이면 intersecting을 한다
+그러면 trigger는 unobserve한다
+페이지 변경할떄 page가 userEfeect의 dependenct이기 때문에 IntersectionObserver코드가
+다시 실행된다. <- trigger가 다시 observe된다.
+ㄴ> unobserve한 다음에 page를 바꾸고 page가 userEfeect의 dependenct이기 때문에 IntersectionObserver코드가
+다시 실행된다.
+
+useEffect가 함수를 return할떄마다 observe의 연결을 끊어야한다.
+ㄴ> return하면 그 컴포넌트는 사라지는데 observe 할 이유가 없기떄문
 ```
