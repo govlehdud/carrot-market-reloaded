@@ -598,4 +598,20 @@ span을 observe하다가 버튼(element)이 사용자의 화면에 보이면 int
 
 useEffect가 함수를 return할떄마다 observe의 연결을 끊어야한다.
 ㄴ> return하면 그 컴포넌트는 사라지는데 observe 할 이유가 없기떄문
+--------------------------------------------------------------------------------------------------------------
+2024-12-04
+#11 Product Upload
+
+HTML에서 input에 id가 있으면 그 input을 위한 label을 만들 수 있다.
+for이랑 input의 id가 같으면 label을 클릭할 떄마다 input이 focus된다.
+
+react에서 쓰고있기떄문에 for이아닌 htmlFor이라고 써야한다.
+
+className="hidden" 이라고쓰면 숨길수있다.
+
+URL.createObjectURL
+URL을 생성하고 우리 브라우저에만 존재하고 다른사람들은 볼수없다.
+파일이 브라우저의 메모리에 업로드되었고, 페이지를 새로고침 할 떄 까지 거기에 저장된다는 것이다.
+
+import 할떄 /promises를 붙이면 async와 await를 사용할수있다.
 ```
