@@ -710,7 +710,10 @@ unstable_cache실행시 일어나는일
 	const product = await getCachedProductTitle(Number(params.id));
 
 	1. const product는 getCachedProductTitle를 param.id를 param로 넣어서 호출한다.
-	2. getCachedProductTitle은 nextCache
+	2. getCachedProductTitle 은 nextCache(getProductTitle{param.id) 이렇게 파라미터를 넣어야할것같지만 나중에 자동으로 getCachedProductTitle으로보내져서 안넣어줘도된다!!
+	2-1. (id:number) => getProductTItle() 이렇게 하는것과 같기떄문이다!!
+
+  https://nextjs.org/docs/app/api-reference/functions/revalidateTag
 
 
 ```

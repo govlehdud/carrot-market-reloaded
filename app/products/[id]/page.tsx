@@ -5,7 +5,7 @@ import { UserIcon } from "@heroicons/react/24/solid";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { unstable_cache as nextCache } from "next/cache";
+import { unstable_cache as nextCache, revalidateTag } from "next/cache";
 
 async function getIsOwner(userId: number) {
   const session = await getSession();
@@ -16,6 +16,7 @@ async function getIsOwner(userId: number) {
 }
 
 async function getProduct(id: number) {
+  console.log("product");
   const product = await db.product.findUnique({
     where: {
       id,
@@ -33,10 +34,11 @@ async function getProduct(id: number) {
 }
 
 const getCachedProduct = nextCache(getProduct, ["product-detail"], {
-  tags: ["product-detail"],
+  tags: ["product-detail", "refresh"],
 });
 
 async function getProductTitle(id: number) {
+  console.log("title");
   const product = await db.product.findUnique({
     where: {
       id,
@@ -51,7 +53,7 @@ async function getProductTitle(id: number) {
 }
 
 const getCachedProductTitle = nextCache(getProductTitle, ["product-title"], {
-  tags: ["product-title"],
+  tags: ["product-title", "refresh"],
 });
 
 export async function generateMetadata({ params }: { params: { id: string } }) {
@@ -75,6 +77,11 @@ export default async function ProductDetail({
     return notFound();
   }
   const isOwner = await getIsOwner(product.userId);
+  const revalidate = async () => {
+    "use server";
+    // revalidateTag("product-title");
+    revalidateTag("refresh");
+  };
   return (
     <div>
       <div className="relative aspect-square">
@@ -111,9 +118,12 @@ export default async function ProductDetail({
           {formatToWon(product.price)}원
         </span>
         {isOwner ? (
-          <button className="bg-red-500 px-5 py-2.5 rounded-md text-white font-semibold">
-            Delete product
-          </button>
+          <form action={revalidate}>
+            <button className="bg-red-500 px-5 py-2.5 rounded-md text-white font-semibold">
+              {/* Delete product */}
+              Revalidate title cache
+            </button>
+          </form>
         ) : null}
         <Link
           className="bg-orange-500 px-5 py-2.5 rounded-md text-white font-semibold"
