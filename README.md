@@ -614,4 +614,103 @@ URL을 생성하고 우리 브라우저에만 존재하고 다른사람들은 �
 파일이 브라우저의 메모리에 업로드되었고, 페이지를 새로고침 할 떄 까지 거기에 저장된다는 것이다.
 
 import 할떄 /promises를 붙이면 async와 await를 사용할수있다.
+
+
+--------------------------------------------------------------------------------------------------------------
+2024-12-05
+#13 Caching
+
+DB와 상호작용 하는 방식과 시점을 더 효율적으로 할수있게해줌
+
+캐싱(Caching)의 개념
+- 서버로부터 받은 데이터를 메모리에 저장해 놓는 것
+
+캐싱의 장점
+저장한 정보를 재활용함으로써, 동일한 API를 반복해서 요청하는 상황을 줄인다.
+즉, 화면에 빠르게 원하는 정보를 표시할 수있고, DB의 부담또한 덜어 줄 수있다.
+
+강의의 예시:
+
+generateMetaData 함수 내부에서 getProduct 액션을 실행하여 서버에서 정보를 받아오면, 페이지의 타이틀에 제품의 이름을 동적으로 넣어주는 것이 가능하다.
+
+그런데 Product 컴포넌트 함수 내부에서도 제품의 정보를 가져오기 위해 getProduct 액션을 실행하니까, 같은 액션을 두 번 실행하게 된다.
+
+먼저 실행된 getProduct 액션의 결과, 즉 반환값을 저장해 놓고 재사용하면,
+서버에 가해지는 부하도 줄일 수 있고, 사용자에게도 빠르게 화면을 보여줄 수 있다.
+
+
+unstable_cache
+
+Next팀이 14버전에서 공개한 캐싱함수
+
+아직은 불안정할 수있으므로, 설정한 이름이다 추후 이름이 바뀔수도있음
+불편하면 import시 import { unstable_cache as nextCache } from "next/cache";
+이렇게 as 별칭 함수를 써서 바꿔써도된다.
+
+사용방법
+첫 번째 매개변수: action 함수 삽입 (db 통신, 데이터를 반환하는 함수)
+두번째 매개변수: 캐시키 배열 (프로젝트 내부에서 하나의 action에대해 unique해야함.
+다른 action함수에 같은값을 사용하면 안됨)
+
+이렇게 세팅한 unstable_cache를 기존의 action대신 호출해주면 됨.
+
+unstable_cache실행시 일어나는일
+첫 호출에서는 그냥 이전 코드와 똑같이 action함수가 실행됨. db에 요청을 보내고 결과를 반환함.
+하지만 데이터가 메모리에 캐싱됨
+
+이후에 다시 unstable_cache 함수가 호출되면,db와의 통신을 하지않음.
+첫번째 호출에서 캐시된 데이터를 반환함.
+
+그래서 강의에서는 prisma studio로 db에 저장된 Product이름을 바꿔주었으나,
+유저에게 보여지는 값은 바뀌지 않는걸 알수있음
+- db의 값을 바꾸기 전의 데이터를 캐싱해놓아서 그 데이터를 제공하기 때문임
+
+
+ revalidate: 10, <- 숫자(초)만큼 지난후 update할수있게되는 새로고침 타이머같은 함수
+
+
+
+ 우리가 요청했을떄 데이터를 새로고침하는 방법을 배워야한다.
+
+
+  const reavalidate = async () => {
+    "use server";
+    revalidatePath("/products");
+  };
+  <form action={reavalidate}>
+        <button>Revalidate</button>
+  </form>
+
+  1. button을 눌렀을떄 revalidate를 찾아감
+  2. use server <- 백엔드서버가동함
+  3. revalidatePath("/products"); <- /products 경로와 연관돼있는 모든 데이터가 새로고침됨
+  모든 데이터가 새로고침 되기 떄문에 tag를 이용해서 따로 설정해주는것이 필요하다.
+
+
+
+	async function getProductTitle(id: number) {
+	const product = await db.product.findUnique({
+	where: {
+	  id,
+	},
+	select: {
+	  title: true,
+	},
+
+	});
+	return {
+		title: product?.title,
+	};
+	}
+
+	const getCachedProductTitle = nextCache(getProductTitle, ["product-title"], {
+	  tags: ["product-title"],
+	});
+
+	const product = await getCachedProductTitle(Number(params.id));
+
+	1. const product는 getCachedProductTitle를 param.id를 param로 넣어서 호출한다.
+	2. getCachedProductTitle은 nextCache
+
+
 ```
