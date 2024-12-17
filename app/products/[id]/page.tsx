@@ -63,6 +63,10 @@ export async function generateMetadata({ params }: { params: { id: string } }) {
   };
 }
 
+// dynamicParams가 true일때는 미리 생성되지 않은 페이지들이 dynamic 페이지들로 간주될거야
+// dynamicParams가 false일때는 오직 빌드할떄 미리 생성된 페이지들만 찾을수있다
+export const dynamicParams = true;
+
 export default async function ProductDetail({
   params,
 }: {
@@ -134,4 +138,13 @@ export default async function ProductDetail({
       </div>
     </div>
   );
+}
+
+export async function generateStaticParams() {
+  const product = await db.product.findMany({
+    select: {
+      id: true,
+    },
+  });
+  return product.map((product) => ({ id: product.id + "" }));
 }

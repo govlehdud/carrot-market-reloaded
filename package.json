@@ -28,7 +28,7 @@
     "@types/react-dom": "^18",
     "@types/validator": "^13.12.2",
     "daisyui": "^4.12.14",
-    "eslint": "^8",
+    "eslint": "^8.57.1",
     "eslint-config-next": "15.0.3",
     "postcss": "^8",
     "prisma": "^5.22.0",

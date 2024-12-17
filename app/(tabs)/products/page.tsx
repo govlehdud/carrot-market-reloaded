@@ -30,6 +30,8 @@ export const metadata = {
   title: "Home",
 };
 
+export const dynamic = "force-dynamic";
+
 export type InitialProducts = Prisma.PromiseReturnType<
   typeof getInitialProducts
 >;
