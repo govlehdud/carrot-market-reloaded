@@ -716,4 +716,54 @@ unstable_cache실행시 일어나는일
   https://nextjs.org/docs/app/api-reference/functions/revalidateTag
 
 
+
+Next15부터
+ReactJS19 지원!,ESLint 9 지원!
+
+용어 정리!
+ESLint: 코드 품질을 개선하고 오류를 찾아주는 도구, 안티패턴을 감지한다.
+Prettier: 코드 스타일을 통일하고 코드를 예쁘게 만들어주는 도구, 코드 포맷팅을 자동으로 해준다.
+
+Server vs Client
+Next.js에서는 서버 컴포넌트(Server Component)와 클라이언트 컴포넌트(Client Component)를 구분해 코드 일부가 서버 혹은 클라이언트에서 출력될 수 있도록 만들 수 있습니다.
+*기본적으로 생성하는 모든 컴포넌트는 서버 컴포넌트입니다!*
+클라이언트 컴포넌트로 변경/사용하려면 다음과 같이 컴포넌트 최상단에 'use client' 선언이 필요하고, 해당 선언이 없으면 서버 컴포넌트입니다.
+
+Server 컴포넌트만 사용:
+cookies
+headers
+redirect
+generateMetadata
+revalidatePath
+
+Client 컴포넌트만 사용:
+useState
+useEffect
+onClick
+onChange
+useRouter
+useParams
+useSearchParams
+useFormState
+useOptimistic
+
+ 각 서버와 클라이언트 컴포넌트에서 맞는 API를 써야지 오류가 안난다.
+
+라우팅 계층 구조를 알아보자
+<layout.js>
+  <template.js>
+    <error.js>
+      <loading.js>
+        <not-found.js>
+          <page.js>
+          </page.js>
+        </not-found.js>
+      </loading.js>
+    </error.js>
+  </template.js>
+</layout.js>
+
+NextJs에선 a태그를 사용하지않고 Link태그를 사용한다.
+이동하는 페이지 전체를 새로고침하지않고 최적화된 번틀만 일부 로드하거나 서버랜더링 기능등의 NextJs프로젝트 내에서 최적화된 페이지를 제공합니다
+<Link > 컴포넌트는 prefetch를 사용하여 뷰포트에 보여질 때, 연결된 경로의 데이터를 미리 가져와 탐색 성능을 크게 향상시킬수있다.
 ```
