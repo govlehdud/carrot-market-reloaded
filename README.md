@@ -767,3 +767,9 @@ NextJs에선 a태그를 사용하지않고 Link태그를 사용한다.
 이동하는 페이지 전체를 새로고침하지않고 최적화된 번틀만 일부 로드하거나 서버랜더링 기능등의 NextJs프로젝트 내에서 최적화된 페이지를 제공합니다
 <Link > 컴포넌트는 prefetch를 사용하여 뷰포트에 보여질 때, 연결된 경로의 데이터를 미리 가져와 탐색 성능을 크게 향상시킬수있다.
 ```
+
+Github OAuth 설정
+' https://github.com/settings/applications/new ' 에 들어와서
+원하는 name, 설정할 URL 입력 callbackURL 입력 후 Register application 버튼 누르면 된다.
+그리고 난 후 Client ID, Client Secret 발급받고 .env파일에 넣어주면된다.
+client secret은 노출되면 안된다.
